@@ -132,7 +132,17 @@ def get_listing_information(listing_id):
     x = x.split(">")
     x = x[2].split("<")
     x = x[0]
-    if "STR" in x:
+
+    # Hotel room in Mission District,109,41545776,Exempt,Entire Room,1 something about exempt is not correct
+    #16204265
+    
+   
+    boolexempt = False
+    
+    if x.isdigit() == True:
+        boolexempt = True
+
+    if (("STR" in x) and (x.startswith("L") == False)) or ((boolexempt == True) and (x.startswith("L") == False)):
         policy_number = x
     elif ("pending" in x) or ("Pending" in x):
         policy_number = "Pending"
@@ -176,7 +186,8 @@ def get_listing_information(listing_id):
     tag_num_bedrooms = tag_num_bedrooms.split("<")
     new_str = ""
     for i in tag_num_bedrooms:
-        if "bedroom" in i:
+        
+        if ("bedroom" in i) or ("studio" in i) or ("bed" in i):
             new_str = i
     
     
@@ -189,11 +200,9 @@ def get_listing_information(listing_id):
    
     new_str = str(new_str)
 
+    
+    ret_tuple = (policy_number, final_place_type, int(new_str))
 
-    if new_str != "['']":
-        ret_tuple = (policy_number, final_place_type, int(new_str))
-    else:
-        ret_tuple = (policy_number, final_place_type, (new_str))
     content.close()
     
     return ret_tuple
@@ -262,19 +271,17 @@ def write_csv(data, filename):
 
     data.sort(key = lambda x:x[1])
     fout = open(filename, 'w')
-    str_header = str("Listing Title,Cost,Listing ID,Policy Number,Place Type,Number of Bedrooms")
-    fout.write(str_header)
+    writer = csv.writer(fout)
 
-    fout.write("\n")
+    writer.writerow(["Listing Title", "Cost", "Listing ID", "Policy Number", "Place Type", "Number of Bedrooms"])
     index = 0
+    l = []
     for i in data:
-        fout.write(data[index][0]) #get the first one so the , doesn't mess it up
-        
         for j in i:
-            fout.write("," + str(j))    
-        
-        index += 1
-        fout.write("\n")
+            l.append(str(j))
+        writer.writerow(l)
+        l = []
+
 
     fout.close()
      
@@ -301,31 +308,20 @@ def check_policy_numbers(data):
     ]
 
     """
-    ''' 
-    #use this 
-    regex1 = (20[0-9]{2}-00[0-9]{4}STR)|(STR-000[0-9]{4})
 
 
     ret_list = []
+
     for i in data: #goes through each tuple 
-
-        s = i[3] #want the third index of each tuple 
-        if re.search(s, regex1):
-            ret_list.append(regex1)
-        
-        if s.lower().find("pending") == True:
-            continue
-        if s.lower().find("exempt") == True:
-            continue
-        #TO DO: fix the regex 
-        res1 = re.finall(str_match1, s)
-        res2 = re.finall(str_match2, s)
-        if len(res1) == 0 and len(res2) == 0:
-            ret_list.append(s)
-
+        if i[3] != "Pending" and i[3] != "Exempt":
+            if i[3].startswith("STR") or i[3].endswith("STR"):
+                continue
+            else:
+                ret_list.append(i[2])
+            
     return ret_list
-    '''
-    pass
+    
+
 
 def extra_credit(listing_id):
     """
@@ -341,11 +337,145 @@ def extra_credit(listing_id):
     gone over their 90 day limit, else return True, indicating the lister has
     never gone over their limit.
     """
-    #put all the months and years into a list  
-    #find the lowest per and highest year 
-    #make a list of that length
-    #make a count var
-    #while still on each year, count how many reviews per year
+
+    # open reviews page
+    f = "html_files/listing_" + listing_id + "_reviews.html"
+    # f = "html_files/listing_16204265_reviews.html"
+    content = open(f, 'r')
+    content2 = content.read()
+    soup = BeautifulSoup(content2, 'html.parser')
+
+    # x = soup.find('span', class_ = "_s65ijh7")
+    # x = str(x)
+    # x = x.split()
+    # x = x[8]
+    # print(x)
+    # start in 2007
+    l = []
+    y = soup.find_all('li', class_ = "_1f1oir5")
+    print(y)
+    # print(y)
+    var = ""
+    for i in y:
+        b = str(i)
+        #  or ("February" in y[i]) or ("March" in y[i]) or ("April" in y[i]) or ("May" in y[i]) or ("June" in y[i]) or ("July" in y[i]) or ("August" in y[i]) or ("September" in y[i]) or ("October" in y[i]) or ("November" in y[i]) or ("December" in y[i])
+        
+        
+        if ("January" in str(y[i])):
+            a = y[i]
+            var = str(a).split(">")
+            var = var[1]
+            var = var.split("<")
+            var = var[0]
+            l.append(var)
+            var = ""
+
+        if ("February" in str(y[i])):
+            a = y[i]
+            var = str(a).split(">")
+            var = var[1]
+            var = var.split("<")
+            var = var[0]
+            l.append(var)
+            var = ""
+        
+        if ("March" in str(y[i])):
+            a = y[i]
+            var = str(a).split(">")
+            var = var[1]
+            var = var.split("<")
+            var = var[0]
+            l.append(var)
+            var = ""    
+
+        if ("April" in str(y[i])):
+            a = y[i]
+            var = str(a).split(">")
+            var = var[1]
+            var = var.split("<")
+            var = var[0]
+            l.append(var)
+            var = ""
+
+
+        if ("May" in str(y[i])):
+            a = y[i]
+            var = str(a).split(">")
+            var = var[1]
+            var = var.split("<")
+            var = var[0]
+            l.append(var)
+            var = ""
+        
+        if ("June" in str(y[i])):
+            a = y[i]
+            var = str(a).split(">")
+            var = var[1]
+            var = var.split("<")
+            var = var[0]
+            l.append(var)
+            var = ""
+        
+        if ("July" in str(y[i])):
+            a = y[i]
+            var = str(a).split(">")
+            var = var[1]
+            var = var.split("<")
+            var = var[0]
+            l.append(var)
+            var = ""
+        
+        if ("August " in str(y[i])):
+            a = y[i]
+            var = str(a).split(">")
+            var = var[1]
+            var = var.split("<")
+            var = var[0]
+            l.append(var)
+            var = ""
+        
+        if ("September" in str(y[i])):
+            a = y[i]
+            var = str(a).split(">")
+            var = var[1]
+            var = var.split("<")
+            var = var[0]
+            l.append(var)
+            var = ""
+
+        if ("October" in str(y[i])):
+            a = y[i]
+            var = str(a).split(">")
+            var = var[1]
+            var = var.split("<")
+            var = var[0]
+            l.append(var)
+            var = ""
+
+        if ("November" in str(y[i])):
+            a = y[i]
+            var = str(a).split(">")
+            var = var[1]
+            var = var.split("<")
+            var = var[0]
+            l.append(var)
+            var = ""
+    
+        if ("December" in str(y[i])):
+            a = y[i]
+            var = str(a).split(">")
+            var = var[1]
+            var = var.split("<")
+            var = var[0]
+            l.append(var)
+            var = ""
+    print(l)
+  
+    # put all the months and years into a list  
+    # find the lowest per and highest year 
+    # make a list of that length
+    # make a count var
+    # while still on each year, count how many reviews per year
     #if count is ever greater than 90, return False
     #else return True
 
@@ -445,50 +575,40 @@ class TestCases(unittest.TestCase):
         # check that there are 21 lines in the csv
         self.assertEqual(len(csv_lines), 21)
         # check that the header row is correct
-       
-        self.assertEqual(str(csv_lines[0]), "Listing Title,Cost,Listing ID,Policy Number,Place Type,Number of Bedrooms")
+        self.assertEqual(csv_lines[0], ["Listing Title","Cost","Listing ID","Policy Number","Place Type","Number of Bedrooms"])
         # check that the next row is Private room in Mission District,82,51027324,Pending,Private Room,1
-        
-        self.assertEqual(str(csv_lines[1][0]), "Private room in Mission District")
-        self.assertEqual(str(csv_lines[1][1]), 82)
-        self.assertEqual(str(csv_lines[1][2]), "51027324")
-        self.assertEqual(str(csv_lines[1][3]), "Pending")
-        self.assertEqual(str(csv_lines[1][4]), "Private room")
-        self.assertEqual(str(csv_lines[1][5]), 1)
-        self.assertEqual(str(csv_lines[1]), "Private room in Mission District,82,51027324,Pending,Private Room,1")
+    
+        self.assertEqual((csv_lines[1]), ["Private room in Mission District","82","51027324","Pending","Private Room","1"])
 
 
         # check that the last row is Apartment in Mission District,399,28668414,Pending,Entire Room,2
-
-        self.assertEqual(csv_lines[-1][0], "Apartment in Mission District")
-        self.assertEqual(csv_lines[-1][1], 399)
-        self.assertEqual(csv_lines[-1][2], "28668414")
-        self.assertEqual(csv_lines[-1][3], "Pending")
-        self.assertEqual(csv_lines[-1][4], "Entire Room")
-        self.assertEqual(csv_lines[-1][5], 2)
+        self.assertEqual(csv_lines[-1], ["Apartment in Mission District","399","28668414","Pending","Entire Room","2"])
 
 
-    # def test_check_policy_numbers(self):
-    #     # call get_detailed_listing_database on "html_files/mission_district_search_results.html"
-    #     # and save the result to a variable
-    #     detailed_database = get_detailed_listing_database("html_files/mission_district_search_results.html")
-    #     # call check_policy_numbers on the variable created above and save the result as a variable
-    #     invalid_listings = check_policy_numbers(detailed_database)
-    #     # check that the return value is a list
-    #     self.assertEqual(type(invalid_listings), list)
-    #     # check that there is exactly one element in the string
-    #     self.assertEqual(len(invalid_listings), 1)
-    #     # check that the element in the list is a string
-    #     self.assertEqual(type(invalid_listings[0]), str)
-    #     # check that the first element in the list is '16204265'
+    def test_check_policy_numbers(self):
+        # call get_detailed_listing_database on "html_files/mission_district_search_results.html"
+        # and save the result to a variable
+        detailed_database = get_detailed_listing_database("html_files/mission_district_search_results.html")
+        # call check_policy_numbers on the variable created above and save the result as a variable
+        invalid_listings = check_policy_numbers(detailed_database)
+        # check that the return value is a list
+        self.assertEqual(type(invalid_listings), list)
+        # check that there is exactly one element in the string
+        self.assertEqual(len(invalid_listings), 1)
+        # check that the element in the list is a string
+        self.assertEqual(type(invalid_listings[0]), str)
+        # check that the first element in the list is '16204265'
         
-    #     # TO DO check it is not anything nested that needs invalid_listings[][] 
-    #     self.assertEqual(invalid_listings[0], "16204265")
+        # TO DO check it is not anything nested that needs invalid_listings[][] 
+        self.assertEqual(invalid_listings[0], "16204265")
         
+
+
 
 
 if __name__ == '__main__':
     database = get_detailed_listing_database("html_files/mission_district_search_results.html")
     write_csv(database, "airbnb_dataset.csv")
     check_policy_numbers(database)
+    extra_credit("16204265")
     unittest.main(verbosity=2)
