@@ -445,7 +445,6 @@ class TestCases(unittest.TestCase):
         self.assertEqual(type(invalid_listings[0]), str)
         # check that the first element in the list is '16204265'
         
-        # TO DO check it is not anything nested that needs invalid_listings[][] 
         self.assertEqual(invalid_listings[0], "16204265")
         
 
