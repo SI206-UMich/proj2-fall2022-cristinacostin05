@@ -6,6 +6,11 @@ import os
 import csv
 import unittest
 
+# Your name: Cristina Costin 
+# Your student id: 2690 2708
+# Your email: costinc@umich.edu
+# List who you have worked with on this project: Rachel Abellera, Cassandra Mcdaniel
+
 
 def get_listings_from_search_results(html_file):
     """
@@ -30,10 +35,7 @@ def get_listings_from_search_results(html_file):
     content = open(html_file, 'r')
     content2 = content.read()
     soup = BeautifulSoup(content2, 'html.parser')
-    
     return_list = []
-
-    #get the titles 
     tag1 = soup.find_all('div', class_ = "t1jojoys dir dir-ltr")
     title_list = []
     var = []
@@ -56,7 +58,6 @@ def get_listings_from_search_results(html_file):
     string_id_list = []
     tag3 = soup.find_all('meta', itemprop = "url")
 
-    # TODO: this needs fixing because of the "plus" parts of this  
     for i in tag3:
         stri = str(i)
         id = stri.split('/')
@@ -117,11 +118,6 @@ def get_listing_information(listing_id):
 
 
     f = "html_files/listing_" + listing_id + ".html"
-
-    # f = "html_files/listing_1944564.html"
-    # 1944564
-    # f = "html_files/listing_32871760.html"
-    # 32871760
     content = open(f, 'r')
     content2 = content.read()
     soup = BeautifulSoup(content2, 'html.parser')
@@ -133,10 +129,6 @@ def get_listing_information(listing_id):
     x = x[2].split("<")
     x = x[0]
 
-    # Hotel room in Mission District,109,41545776,Exempt,Entire Room,1 something about exempt is not correct
-    #16204265
-    
-   
     boolexempt = False
     
     if x.isdigit() == True:
@@ -168,18 +160,6 @@ def get_listing_information(listing_id):
     
     if booltype == False:
         final_place_type = "Entire Room"
-    '''  
-    for i in list_tag_place_type:
-        if ("private" in i[1]) or ("Private" in i[1]):
-            final_place_type = "Private Room"
-            booltype = True 
-        if ("shared" in i) or ("Shared" in i):
-            final_place_type = "Shared Room"
-            booltype = True 
-    
-    if booltype == False:
-        final_place_type = "Entire Room"
-    '''
 
     tag_num_bedrooms = soup.find('div', class_ = "_tqmy57")
     tag_num_bedrooms = str(tag_num_bedrooms)
@@ -205,8 +185,7 @@ def get_listing_information(listing_id):
 
     content.close()
     
-    return ret_tuple
-    #pass  
+    return ret_tuple 
     
     
 
@@ -227,11 +206,9 @@ def get_detailed_listing_database(html_file):
 
     """
     
-    # get_listing_information
-    # f = "html_files/listing_1944564.html"
+
     return_list = []
     listings = get_listings_from_search_results(html_file)
-    # listings = get_listings_from_search_results(f)
     len_listings = len(listings)
     for i in range(0,len_listings):
         tup1 = (listings[i])
@@ -338,148 +315,26 @@ def extra_credit(listing_id):
     never gone over their limit.
     """
 
-    # open reviews page
-    f = "html_files/listing_" + listing_id + "_reviews.html"
-    # f = "html_files/listing_16204265_reviews.html"
-    content = open(f, 'r')
+
+    content = open("html_files/listing_" + str(listing_id) + "_reviews.html", 'r')
     content2 = content.read()
     soup = BeautifulSoup(content2, 'html.parser')
-
-    # x = soup.find('span', class_ = "_s65ijh7")
-    # x = str(x)
-    # x = x.split()
-    # x = x[8]
-    # print(x)
-    # start in 2007
-    l = []
-    y = soup.find_all('li', class_ = "_1f1oir5")
-    print(y)
-    # print(y)
-    var = ""
-    for i in y:
-        b = str(i)
-        #  or ("February" in y[i]) or ("March" in y[i]) or ("April" in y[i]) or ("May" in y[i]) or ("June" in y[i]) or ("July" in y[i]) or ("August" in y[i]) or ("September" in y[i]) or ("October" in y[i]) or ("November" in y[i]) or ("December" in y[i])
-        
-        
-        if ("January" in str(y[i])):
-            a = y[i]
-            var = str(a).split(">")
-            var = var[1]
-            var = var.split("<")
-            var = var[0]
-            l.append(var)
-            var = ""
-
-        if ("February" in str(y[i])):
-            a = y[i]
-            var = str(a).split(">")
-            var = var[1]
-            var = var.split("<")
-            var = var[0]
-            l.append(var)
-            var = ""
-        
-        if ("March" in str(y[i])):
-            a = y[i]
-            var = str(a).split(">")
-            var = var[1]
-            var = var.split("<")
-            var = var[0]
-            l.append(var)
-            var = ""    
-
-        if ("April" in str(y[i])):
-            a = y[i]
-            var = str(a).split(">")
-            var = var[1]
-            var = var.split("<")
-            var = var[0]
-            l.append(var)
-            var = ""
-
-
-        if ("May" in str(y[i])):
-            a = y[i]
-            var = str(a).split(">")
-            var = var[1]
-            var = var.split("<")
-            var = var[0]
-            l.append(var)
-            var = ""
-        
-        if ("June" in str(y[i])):
-            a = y[i]
-            var = str(a).split(">")
-            var = var[1]
-            var = var.split("<")
-            var = var[0]
-            l.append(var)
-            var = ""
-        
-        if ("July" in str(y[i])):
-            a = y[i]
-            var = str(a).split(">")
-            var = var[1]
-            var = var.split("<")
-            var = var[0]
-            l.append(var)
-            var = ""
-        
-        if ("August " in str(y[i])):
-            a = y[i]
-            var = str(a).split(">")
-            var = var[1]
-            var = var.split("<")
-            var = var[0]
-            l.append(var)
-            var = ""
-        
-        if ("September" in str(y[i])):
-            a = y[i]
-            var = str(a).split(">")
-            var = var[1]
-            var = var.split("<")
-            var = var[0]
-            l.append(var)
-            var = ""
-
-        if ("October" in str(y[i])):
-            a = y[i]
-            var = str(a).split(">")
-            var = var[1]
-            var = var.split("<")
-            var = var[0]
-            l.append(var)
-            var = ""
-
-        if ("November" in str(y[i])):
-            a = y[i]
-            var = str(a).split(">")
-            var = var[1]
-            var = var.split("<")
-            var = var[0]
-            l.append(var)
-            var = ""
+    y = soup.find_all("li", class_ ="_1f1oir5")
+    years = []
+    for el in y:
+       years.append(el.get_text()[-4:])
+    years.sort()
+    unique_years = list(set(years))
+    counts = {}
+    for year in unique_years:
+        counts[year]=0
+    for year in years:
+        counts[year]+=1
+    for value in counts.values():
+        if value > 90:
+            return False
+    return True
     
-        if ("December" in str(y[i])):
-            a = y[i]
-            var = str(a).split(">")
-            var = var[1]
-            var = var.split("<")
-            var = var[0]
-            l.append(var)
-            var = ""
-    print(l)
-  
-    # put all the months and years into a list  
-    # find the lowest per and highest year 
-    # make a list of that length
-    # make a count var
-    # while still on each year, count how many reviews per year
-    #if count is ever greater than 90, return False
-    #else return True
-
-    pass
 
 
 class TestCases(unittest.TestCase):
@@ -494,22 +349,13 @@ class TestCases(unittest.TestCase):
         self.assertEqual(type(listings), list)
         # check that each item in the list is a tuple
         for i in range(0, len(listings)):
-            # print(type(i))
-            # print(type(listings[i]))
             self.assertEqual(type(listings[i]), tuple)
 
         # check that the first title, cost, and listing id tuple is correct (open the search results html and find it)
-        #title 
         self.assertEqual(listings[0], ("Loft in Mission District", 210, '1944564'))
-        # # cost 
-        # self.assertEqual(listings[0][1], 210)
-        # #listing id
-        # self.assertEqual(listings[0][2], "1944564")
         
         # check that the last title is correct (open the search results html and find it)
         self.assertEqual(listings[-1][0], "Guest suite in Mission District")
-        # self.assertEqual(listings[-1][1], 238)
-        # self.assertEqual(listings[-1][2], "32871760")
 
 
     def test_get_listing_information(self):
@@ -611,4 +457,5 @@ if __name__ == '__main__':
     write_csv(database, "airbnb_dataset.csv")
     check_policy_numbers(database)
     extra_credit("16204265")
+    extra_credit("1944564")
     unittest.main(verbosity=2)
